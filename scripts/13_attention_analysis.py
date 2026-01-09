@@ -1,0 +1,1 @@
+# attention割合 → outputs/figures/attn_*.pngに保存

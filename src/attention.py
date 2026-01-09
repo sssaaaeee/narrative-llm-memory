@@ -1,0 +1,1 @@
+# token→category付与、割合計算
