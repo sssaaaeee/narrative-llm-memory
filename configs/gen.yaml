@@ -1,1 +1,92 @@
-# 生成の設定 (章数，イベント数，seed等)
+# gen.yaml
+project:
+  name: narrativity-dataset-generation
+  seed: 42
+
+paths:
+  # ----- inputs -----
+  elements_out: data/elements/common_elements.json
+
+  # ----- generated outputs -----
+  stories_out: data/stories/base_data.json
+  distractor_out: data/distractors/distractor.json
+  qa_out: data/qa/qa.json
+
+# =========================
+# 1) Common elements
+# =========================
+elements:
+  num_candidates:
+    location: 300
+    temporal: 300
+    entity: 300
+    content: 300
+
+  openai:
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    max_tokens: 256
+
+# =========================
+# 2) Story generation
+# =========================
+stories:
+  num_chapters: 100
+  events_per_chapter: 10
+
+  openai:
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    max_tokens: 1200
+    max_retries: 2
+
+  narrativity:
+    high:
+      description: >
+        Events are arranged in a temporally and causally coherent manner,
+        centered on a consistent protagonist, forming a clear episode.
+    low:
+      description: >
+        Events are presented as independent factual statements without
+        causal or temporal coherence.
+
+  style:
+    name: Shakespearean
+    description: >
+      Emulating the poetic language, dramatic flair, and rhythmic cadence
+      of Shakespeare's plays, including archaic expressions and heightened emotion.
+
+# =========================
+# 3) Distractor generation
+# =========================
+distractors:
+  ratio: 1.0   # target_length = ratio × (#words in high narrativity text)
+
+  types:
+    MI:
+      description: Meaningless interference
+      filler_phrase: "Humpty Dumpty"
+    RI:
+      description: Related interference (shared entity only)
+    UI:
+      description: Unrelated interference (no shared elements)
+
+# =========================
+# 4) QA generation
+# =========================
+qa:
+  num_questions_per_chapter: 10
+  answer_format: true_false
+
+  topics:
+    - location
+    - temporal
+    - entity
+    - content
+
+  balance:
+    true_ratio: 0.5  # True / False の比率
+
+  constraints:
+    forbid_coreference: true
+    forbid_paraphrase: true

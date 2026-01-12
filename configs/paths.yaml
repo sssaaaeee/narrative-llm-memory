@@ -1,1 +1,73 @@
-# data/, outputs/ のパス定義
+# paths.yaml
+project_root: .
+
+# =========================
+# Data
+# =========================
+data:
+  root: data
+
+  elements:
+    root: data/elements
+    common: data/elements/common_elements.json
+
+  stories:
+    root: data/stories
+    base: data/stories/base_data.json   # high / low narrativity texts
+
+  distractors:
+    root: data/distractors
+    main: data/distractors/distractor.json
+
+  qa:
+    root: data/qa
+    main: data/qa/qa.json
+
+# =========================
+# Prompts
+# =========================
+prompts:
+  root: prompts
+  templates: prompts/templates
+  tf_format: prompts/tf_format.txt
+
+# =========================
+# Experiments
+# =========================
+experiments:
+  root: results
+
+  inference:
+    llama:
+      raw: results/llama/raw_responses.json
+      metrics: results/llama/metrics.json
+
+    qwen:
+      raw: results/qwen/raw_responses.json
+      metrics: results/qwen/metrics.json
+
+  heatmap:
+    llama: results/llama/heatmap
+    qwen: results/qwen/heatmap
+
+  attention:
+    llama:
+      root: results/llama/attention
+      batches: results/llama/attention/batches
+      final: results/llama/attention/results_llama.json
+
+    qwen:
+      root: results/qwen/attention
+      batches: results/qwen/attention/batches
+      final: results/qwen/attention/results_qwen.json
+
+# =========================
+# Logs / Cache
+# =========================
+logs:
+  root: logs
+  generation: logs/generation.log
+  inference: logs/inference.log
+
+cache:
+  root: cache

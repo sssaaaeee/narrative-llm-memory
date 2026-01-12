@@ -1,1 +1,95 @@
-# 実験の設定 (モデル名，温度，max_tokens等)
+# exp.yaml
+project:
+  name: narrativity-interference
+  seed: 42
+
+paths:
+  # ----- inputs -----
+  elements: data/elements/common_elements.json
+  base_data: data/stories/base_data.json
+  distractor: data/distractors/distractor.json
+  qa: data/qa/qa.json
+
+  # ----- outputs root -----
+  outputs: outputs
+
+# =========================
+# 1) Dataset generation
+# =========================
+dataset:
+  num_chapters: 100
+  events_per_chapter: 10
+
+  # story generation (OpenAI) - スクリプト側が参照する想定
+  openai_model: gpt-3.5-turbo
+  max_retries: 2
+  style:
+    name: Shakespearean
+    description: >-
+      emulating the poetic language, dramatic flair, and rhythmic cadence wordistic of Shakespeare's plays,
+      including the use of iambic pentameter, archaic expressions, and heightened emotion
+
+  distractor:
+    # C = ratio * (#words of high story)
+    ratio: 1.0
+    mi_phrase: "Humpty Dumpty"   # MI: meaningless noise を何で埋めるか
+
+# =========================
+# 2) Inference
+# =========================
+inference:
+  # 条件: h/l × NI/MI/RI/UI を回す前提
+  conditions: [NI, MI, RI, UI]
+  levels: [h, l]
+
+  # True/Falseの抽出が壊れにくいようにする設定
+  generation:
+    max_new_tokens: 80
+    temperature: 0.0
+    top_p: 1.0
+
+  # 生成結果(モデル出力)の保存先
+  save:
+    responses_dir: outputs/responses
+    metrics_dir: outputs/metrics
+
+models:
+  llama:
+    name: meta-llama/Llama-2-13b-chat-hf
+    dtype: float16
+    device: cuda
+    # inference用 (AutoModelForCausalLM) で使うメモリ上限
+    max_memory:
+      cuda0: 24GiB
+      cpu: 64GiB
+    offload_dir: offload_llama2
+
+  qwen:
+    name: Qwen/Qwen2.5-14B-Instruct
+    dtype: float16
+    device: cuda
+    max_memory:
+      cuda0: 24GiB
+      cpu: 64GiB
+    offload_dir: offload_qwen
+
+# =========================
+# 3) Evaluation / Visualization
+# =========================
+eval:
+  heatmap:
+    topics: [location, temporal, entity, content]
+    distractor_labels: [NI, MI, RI, UI]
+    topic_labels_short: [s, t, ent, c]
+    output_dir: outputs/figures/heatmap
+    # モデルで色レンジを変える
+    vmin_vmax:
+      llama: [0.4, 0.6]
+      qwen: [0.7, 1.0]
+
+attention:
+  batch_size: 10
+  output_dir: outputs/attention
+  # attention解析でも elements を使う（text内部のラベル付け）
+  labels: [temporal, location, entity, content, other]
+  regions: [text, distractor, question_other]
