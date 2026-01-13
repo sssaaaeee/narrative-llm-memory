@@ -102,11 +102,20 @@ def main() -> None:
             )
 
             for cond in conditions:
-                summary = analyze_prompt_attention(
-                    backbone,
-                    prompts[cond],
-                    elements=elements,
-                )
+                try:
+                    summary = analyze_prompt_attention(
+                        backbone,
+                        prompts[cond],
+                        elements=elements,
+                    )
+                except Exception as e:
+                    print(f"⚠️  Error processing chapter {chapter_id}, condition {cond}: {e}")
+                    # Create a dummy summary to continue
+                    summary = analyze_prompt_attention(
+                        backbone,
+                        prompts[cond][:1000],  # Truncate if needed
+                        elements=elements,
+                    )
 
                 # save per-chapter minimal stats
                 batch_obj[cond].append({
@@ -124,6 +133,12 @@ def main() -> None:
 
         for c in conditions:
             all_prompt_summaries[c].extend(batch_obj[c])
+        
+        # Clear GPU cache after each batch
+        import torch
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            print(f"🧹 GPU cache cleared after batch {batch_idx}")
 
     # aggregate over chapters for each condition
     final = {}
@@ -146,17 +161,38 @@ def main() -> None:
         final[cond] = aggregate_prompt_summaries(per_ch)
 
     results_path = outdir / "results_attention.json"
-    write_json(
-        {
-            "model": args.model,
-            "conditions": conditions,
-            "regions": REGIONS,
-            "labels": LABELS,
-            "results": final,
-        },
-        results_path,
-    )
+    results_obj = {
+        "model": args.model,
+        "conditions": conditions,
+        "regions": REGIONS,
+        "labels": LABELS,
+        "results": final,
+    }
+    write_json(results_obj, results_path)
     print(f"saved: {results_path}")
+    
+    # Generate attention visualization plots
+    from src.viz import plot_element_attention_2x2, plot_element_attention_1x4
+    
+    # Extract model name for display (e.g., "Llama" or "Qwen")
+    model_display_name = args.model.split("/")[-1].split("-")[0]
+    
+    print(f"\nGenerating attention plots for {model_display_name}...")
+    plot_element_attention_2x2(
+        results_obj,
+        output_dir=outdir,
+        model_name=model_display_name,
+        save_format="pdf",
+        show_values=False
+    )
+    plot_element_attention_1x4(
+        results_obj,
+        output_dir=outdir,
+        model_name=model_display_name,
+        save_format="pdf",
+        show_values=False
+    )
+    print(f"Attention plots saved in: {outdir}")
 
 
 if __name__ == "__main__":

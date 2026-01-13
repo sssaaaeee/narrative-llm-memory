@@ -67,18 +67,46 @@ def get_last_token_last_layer_attention(
     Returns:
       tokens: list[str] length = seq_len (token strings)
       vectors: Tensor shape [heads, seq_len] attention from last-token query to all keys (last layer)
+    
+    If CUDA OOM occurs, automatically falls back to CPU.
     """
     inputs = backbone.tokenizer(text, return_tensors="pt")
     inputs = {k: v.to(backbone.device) for k, v in inputs.items()}
 
     tokens = backbone.tokenizer.convert_ids_to_tokens(inputs["input_ids"][0])
 
-    out = backbone.model(**inputs, output_attentions=True)
-    attns = out.attentions  # list[num_layers] of [B, H, Q, K]
-    last_layer = attns[-1][0]  # [H, Q, K]
-    seq_len = inputs["input_ids"].shape[1]
-    last_q = seq_len - 1
-    vectors = last_layer[:, last_q, :]  # [H, K==seq_len]
+    try:
+        out = backbone.model(**inputs, output_attentions=True)
+        attns = out.attentions  # list[num_layers] of [B, H, Q, K]
+        last_layer = attns[-1][0]  # [H, Q, K]
+        seq_len = inputs["input_ids"].shape[1]
+        last_q = seq_len - 1
+        vectors = last_layer[:, last_q, :]  # [H, K==seq_len]
+        
+    except torch.cuda.OutOfMemoryError as e:
+        print(f"⚠️  CUDA OOM detected, falling back to CPU...")
+        # Clear GPU cache
+        torch.cuda.empty_cache()
+        
+        # Move model to CPU temporarily
+        original_device = backbone.device
+        backbone.model.to('cpu')
+        backbone.device = torch.device('cpu')
+        
+        # Re-run on CPU
+        inputs = {k: v.to('cpu') for k, v in inputs.items()}
+        out = backbone.model(**inputs, output_attentions=True)
+        attns = out.attentions
+        last_layer = attns[-1][0]
+        seq_len = inputs["input_ids"].shape[1]
+        last_q = seq_len - 1
+        vectors = last_layer[:, last_q, :]
+        
+        # Move model back to GPU for next iteration
+        backbone.model.to(original_device)
+        backbone.device = original_device
+        torch.cuda.empty_cache()
+        print(f"✅ CPU processing completed, model moved back to {original_device}")
 
     return tokens, vectors
 
@@ -270,11 +298,14 @@ FUNCTION_WORDS = {
 
 def load_elements_for_matching(elements_json: dict) -> Dict[str, set]:
     # expected keys: temporal/location/entity/content
+    # elements_json may have "elements" key or be the elements dict directly
+    elems = elements_json.get("elements", elements_json)
+    
     return {
-        "temporal": set([x.lower() for x in elements_json["temporal"]]),
-        "location": set([x.lower() for x in elements_json["location"]]),
-        "entity": set([x.lower() for x in elements_json["entity"]]),
-        "content": set([x.lower() for x in elements_json["content"]]),
+        "temporal": set([x.lower() for x in elems.get("temporals", elems.get("temporal", []))]),
+        "location": set([x.lower() for x in elems.get("locations", elems.get("location", []))]),
+        "entity": set([x.lower() for x in elems.get("entities", elems.get("entity", []))]),
+        "content": set([x.lower() for x in elems.get("contents", elems.get("content", []))]),
     }
 
 

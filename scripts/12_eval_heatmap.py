@@ -12,11 +12,17 @@ QA_PATH_DEFAULT = "data/qa/qa.json"
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
-    p.add_argument("--responses", type=str, required=True,
+    p.add_argument("--responses", type=str, required=False,
                    help="e.g., outputs/responses/<model_tag>_responses.json")
+    p.add_argument("--model", type=str, required=False,
+                   help="Model name (llama or qwen) - will auto-detect response file")
     p.add_argument("--qa", type=str, default=QA_PATH_DEFAULT)
     p.add_argument("--outdir", type=str, default="outputs/figures")
     p.add_argument("--model_label", type=str, default=None)
+    
+    # These are passed by run_all.py but not used directly
+    p.add_argument("--exp", type=str, default=None)
+    p.add_argument("--paths", type=str, default=None)
 
     # Optional manual override
     p.add_argument("--vmin", type=float, default=None)
@@ -35,6 +41,27 @@ def _default_range_from_model_name(name: str) -> tuple[float, float]:
 
 def main() -> None:
     args = parse_args()
+    
+    # Auto-detect response file from --model if --responses not provided
+    if not args.responses and args.model:
+        response_dir = Path("outputs/responses")
+        model_key = args.model.lower()
+        
+        # Find matching response file
+        candidates = []
+        if response_dir.exists():
+            for f in response_dir.glob("*_responses.json"):
+                if model_key in f.name.lower():
+                    candidates.append(f)
+        
+        if not candidates:
+            raise FileNotFoundError(f"No response file found for model '{args.model}' in {response_dir}")
+        
+        args.responses = str(candidates[0])
+        print(f"Auto-detected response file: {args.responses}")
+    
+    if not args.responses:
+        raise ValueError("Either --responses or --model must be provided")
 
     qa_data = read_json(args.qa)
     resp_obj = read_json(args.responses)

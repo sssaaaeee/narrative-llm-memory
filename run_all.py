@@ -41,6 +41,12 @@ def run(cmd: list[str]) -> None:
     import os
     env = os.environ.copy()
     env['PYTHONPATH'] = str(Path(__file__).parent)
+    
+    # Ensure we use the venv Python if available
+    venv_python = Path(__file__).parent / "venv" / "bin" / "python"
+    if venv_python.exists():
+        cmd[0] = str(venv_python)
+    
     subprocess.run(cmd, check=True, env=env)
 
 
@@ -123,10 +129,14 @@ def main() -> None:
 
     # -------- attention --------
     if not args.skip_attention:
+        exp_cfg = load_yaml(args.exp)
+        
         if args.model in ["llama", "both"]:
-            run([sys.executable, "scripts/13_attention_analysis.py", "--exp", args.exp, "--paths", args.paths, "--model", "llama"])
+            llama_model = exp_cfg.get("models", {}).get("llama", {}).get("name", "meta-llama/Llama-2-13b-chat-hf")
+            run([sys.executable, "scripts/13_attention_analysis.py", "--model", llama_model])
         if args.model in ["qwen", "both"]:
-            run([sys.executable, "scripts/13_attention_analysis.py", "--exp", args.exp, "--paths", args.paths, "--model", "qwen"])
+            qwen_model = exp_cfg.get("models", {}).get("qwen", {}).get("name", "Qwen/Qwen2.5-14B-Instruct")
+            run([sys.executable, "scripts/13_attention_analysis.py", "--model", qwen_model])
 
 
 if __name__ == "__main__":

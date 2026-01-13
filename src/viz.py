@@ -178,3 +178,226 @@ def plot_topic_accuracy_heatmap(
     plt.savefig(out_png, dpi=300)
     plt.savefig(out_pdf, dpi=300, bbox_inches="tight")
     plt.close(fig)
+
+
+# -----------------------------
+# Attention Visualization
+# -----------------------------
+
+def plot_element_attention_2x2(
+    results: dict,
+    output_dir: str | Path,
+    model_name: str = "Model",
+    save_format: str = "pdf",
+    show_values: bool = False,
+) -> None:
+    """
+    4つの干渉条件を 2×2 の1枚図にまとめて、
+    temporal/location/entity/content の attention 平均を High vs Low で比較。
+
+    Args:
+        results: results_attention.jsonから読み込んだ結果データ
+        output_dir: 出力ディレクトリ
+        model_name: 図タイトル等に使うモデル名
+        save_format: "png" or "pdf"
+        show_values: バー上に数値を出すか
+    """
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Condition mapping: h_NI, l_NI, h_MI, l_MI, h_RI, l_RI, h_UI, l_UI
+    conditions = [
+        {'name': 'No Interference (NI)', 'hn_key': 'h_NI', 'ln_key': 'l_NI'},
+        {'name': 'Meaningless Interference (MI)', 'hn_key': 'h_MI', 'ln_key': 'l_MI'},
+        {'name': 'Related Interference (RI)', 'hn_key': 'h_RI', 'ln_key': 'l_RI'},
+        {'name': 'Unrelated Interference (UI)', 'hn_key': 'h_UI', 'ln_key': 'l_UI'}
+    ]
+
+    categories = ['temporal', 'location', 'entity', 'content']
+    category_labels = ['Temporal', 'Location', 'Entity', 'Content']
+
+    # 2×2 サブプロット
+    fig, axes = plt.subplots(2, 2, figsize=(10.5, 6.2), sharey=True)
+    axes = axes.flatten()
+
+    hn_color = '#2E86AB'
+    ln_color = '#A23B72'
+    width = 0.36
+    x = np.arange(len(categories))
+
+    # y上限を決定
+    all_vals = []
+    results_data = results.get('results', {})
+    for c in conditions:
+        if c['hn_key'] in results_data:
+            hn_data = results_data[c['hn_key']]['label_ratios_mean']
+            ln_data = results_data[c['ln_key']]['label_ratios_mean']
+            all_vals.extend([hn_data[k] for k in categories])
+            all_vals.extend([ln_data[k] for k in categories])
+    ymax = max(all_vals) * 1.15 if len(all_vals) else 1.0
+
+    legend_handles = None
+
+    for i, (ax, condition) in enumerate(zip(axes, conditions)):
+        if condition['hn_key'] not in results_data:
+            continue
+            
+        hn_data = results_data[condition['hn_key']]['label_ratios_mean']
+        ln_data = results_data[condition['ln_key']]['label_ratios_mean']
+        
+        hn_std = results_data[condition['hn_key']].get('label_ratios_std', {})
+        ln_std = results_data[condition['ln_key']].get('label_ratios_std', {})
+        n_chapters = results_data[condition['hn_key']].get('num_chapters', 100)
+
+        hn_values = [hn_data[cat] for cat in categories]
+        ln_values = [ln_data[cat] for cat in categories]
+        
+        # 標準誤差
+        hn_se = [hn_std.get(cat, 0) / np.sqrt(n_chapters) for cat in categories]
+        ln_se = [ln_std.get(cat, 0) / np.sqrt(n_chapters) for cat in categories]
+
+        bars1 = ax.bar(x - width/2, hn_values, width, label='High Narrativity',
+                       color=hn_color, alpha=0.85, edgecolor='black', linewidth=0.8,
+                       yerr=hn_se, capsize=4, error_kw={'linewidth': 1.2, 'elinewidth': 1.2})
+        bars2 = ax.bar(x + width/2, ln_values, width, label='Low Narrativity',
+                       color=ln_color, alpha=0.85, edgecolor='black', linewidth=0.8,
+                       yerr=ln_se, capsize=4, error_kw={'linewidth': 1.2, 'elinewidth': 1.2})
+
+        if legend_handles is None:
+            legend_handles = (bars1[0], bars2[0])
+
+        ax.set_title(condition['name'], fontsize=11, fontweight='bold')
+        ax.set_xticks(x)
+        ax.set_xticklabels(category_labels, fontsize=10)
+        ax.grid(axis='y', alpha=0.25, linestyle='--')
+        ax.set_ylim(0, ymax)
+
+        if i % 2 == 0:
+            ax.set_ylabel('Attention Ratio (of Text Region)', fontsize=10)
+
+        if show_values:
+            for bar in list(bars1) + list(bars2):
+                h = bar.get_height()
+                ax.text(bar.get_x() + bar.get_width()/2, h, f'{h:.3f}',
+                        ha='center', va='bottom', fontsize=8)
+
+    fig.suptitle(f'{model_name}: Element-wise Attention Allocation (Final Layer, Head-Averaged)',
+                 fontsize=12, fontweight='bold', y=1.00)
+
+    fig.legend(legend_handles, ['High Narrativity', 'Low Narrativity'],
+               loc='upper center', bbox_to_anchor=(0.5, 0.96), ncol=2,
+               frameon=True, fontsize=10)
+
+    fig.tight_layout(rect=[0, 0, 1, 0.88])
+
+    out_path = output_dir / f"{model_name.lower().replace('/', '_')}_element_attention_2x2.{save_format}"
+    fig.savefig(out_path, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Saved: {out_path}")
+
+
+def plot_element_attention_1x4(
+    results: dict,
+    output_dir: str | Path,
+    model_name: str = "Model",
+    save_format: str = "pdf",
+    show_values: bool = False,
+) -> None:
+    """
+    縦方向に4つのサブプロットを並べたレイアウト (1x4)。
+    各行が1条件を表し，2x2図と同じ指標を示す。
+    """
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    conditions = [
+        {'name': 'No Interference (NI)', 'hn_key': 'h_NI', 'ln_key': 'l_NI'},
+        {'name': 'Meaningless Interference (MI)', 'hn_key': 'h_MI', 'ln_key': 'l_MI'},
+        {'name': 'Related Interference (RI)', 'hn_key': 'h_RI', 'ln_key': 'l_RI'},
+        {'name': 'Unrelated Interference (UI)', 'hn_key': 'h_UI', 'ln_key': 'l_UI'}
+    ]
+
+    categories = ['temporal', 'location', 'entity', 'content']
+    category_labels = ['Temporal', 'Location', 'Entity', 'Content']
+
+    # 1x4 の縦配置
+    fig, axes = plt.subplots(4, 1, figsize=(6.5, 12), sharey=True)
+
+    hn_color = '#2E86AB'
+    ln_color = '#A23B72'
+    width = 0.36
+    x = np.arange(len(categories))
+
+    # y上限を決定
+    all_vals = []
+    results_data = results.get('results', {})
+    for c in conditions:
+        if c['hn_key'] in results_data:
+            hn_data = results_data[c['hn_key']]['label_ratios_mean']
+            ln_data = results_data[c['ln_key']]['label_ratios_mean']
+            all_vals.extend([hn_data[k] for k in categories])
+            all_vals.extend([ln_data[k] for k in categories])
+    ymax = max(all_vals) * 1.15 if len(all_vals) else 1.0
+
+    legend_handles = None
+
+    for i, (ax, condition) in enumerate(zip(axes, conditions)):
+        if condition['hn_key'] not in results_data:
+            continue
+            
+        hn_data = results_data[condition['hn_key']]['label_ratios_mean']
+        ln_data = results_data[condition['ln_key']]['label_ratios_mean']
+
+        hn_std = results_data[condition['hn_key']].get('label_ratios_std', {})
+        ln_std = results_data[condition['ln_key']].get('label_ratios_std', {})
+        n_chapters = results_data[condition['hn_key']].get('num_chapters', 100)
+
+        hn_values = [hn_data[cat] for cat in categories]
+        ln_values = [ln_data[cat] for cat in categories]
+
+        hn_se = [hn_std.get(cat, 0) / np.sqrt(n_chapters) for cat in categories]
+        ln_se = [ln_std.get(cat, 0) / np.sqrt(n_chapters) for cat in categories]
+
+        bars1 = ax.bar(x - width/2, hn_values, width, label='High Narrativity',
+                       color=hn_color, alpha=0.85, edgecolor='black', linewidth=0.8,
+                       yerr=hn_se, capsize=4, error_kw={'linewidth': 1.2, 'elinewidth': 1.2})
+        bars2 = ax.bar(x + width/2, ln_values, width, label='Low Narrativity',
+                       color=ln_color, alpha=0.85, edgecolor='black', linewidth=0.8,
+                       yerr=ln_se, capsize=4, error_kw={'linewidth': 1.2, 'elinewidth': 1.2})
+
+        if legend_handles is None:
+            legend_handles = (bars1[0], bars2[0])
+
+        ax.set_title(condition['name'], fontsize=11, fontweight='bold')
+        ax.set_xticks(x)
+        
+        if i == len(conditions) - 1:
+            ax.set_xticklabels(category_labels, fontsize=10)
+        else:
+            ax.set_xticklabels([''] * len(category_labels))
+
+        ax.grid(axis='y', alpha=0.25, linestyle='--')
+        ax.set_ylim(0, ymax)
+
+        if i == 0:
+            ax.set_ylabel('Attention Ratio (of Text Region)', fontsize=10)
+
+        if show_values:
+            for bar in list(bars1) + list(bars2):
+                h = bar.get_height()
+                ax.text(bar.get_x() + bar.get_width()/2, h, f'{h:.3f}',
+                        ha='center', va='bottom', fontsize=8)
+
+    fig.suptitle(f'{model_name}: Element-wise Attention Allocation (Final Layer, Head-Averaged)',
+                 fontsize=12, fontweight='bold', y=0.995)
+
+    fig.legend(legend_handles, ['High Narrativity', 'Low Narrativity'],
+               loc='upper center', bbox_to_anchor=(0.5, 0.985), ncol=2,
+               frameon=True, fontsize=10)
+
+    fig.tight_layout(rect=[0, 0, 1, 0.96])
+
+    out_path = output_dir / f"{model_name.lower().replace('/', '_')}_element_attention_1x4.{save_format}"
+    fig.savefig(out_path, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Saved: {out_path}")
