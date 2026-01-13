@@ -1,0 +1,80 @@
+[
+  {
+    "chapter": 0,
+    "questions": [
+      "Is it true that who was in Yoga class in Prospect Park at One World Observatory on 2010-05-20 is Zoe Singh?",
+      "Is it true that when Ethan Rivera was in Sculpture exhibition at Storm King Art Center at Hudson River Park is 2012-07-14?",
+      "Is it true that where Evan Kumar was in Art exhibit at the Brooklyn Museum on 2019-12-22 is High Line Park?",
+      "Is it true that who was in Yoga class in Prospect Park at Central Park on 2011-11-02 is Zoe Singh?",
+      "Is it true that who was in Sculpture exhibition at Storm King Art Center at The Cloisters on 2019-12-22 is Rachel Bennett?",
+      "Is it true that where Evan Kumar was in Yoga class in Prospect Park on 2018-04-03 is One World Observatory?",
+      "Is it true that where Zoe Singh was in Outdoor concert in Central Park on 2019-12-22 is High Line Park?",
+      "Is it true that what Natalie Gonzalez did at Metropolitan Museum of Art on 2016-01-28 is Street performance in Washington Square Park?",
+      "Is it true that when Natalie Gonzalez was in Street fair in Chinatown at High Line Park is 2010-05-20?",
+      "Is it true that where Ethan Rivera was in Ice skating at Rockefeller Center on 2016-01-28 is Broadway?"
+    ],
+    "answers": [
+      "True",
+      "True",
+      "False",
+      "False",
+      "True",
+      "False",
+      "False",
+      "True",
+      "False",
+      "False"
+    ],
+    "topics": [
+      "entity",
+      "temporal",
+      "location",
+      "entity",
+      "entity",
+      "location",
+      "location",
+      "content",
+      "temporal",
+      "location"
+    ]
+  },
+  {
+    "chapter": 1,
+    "questions": [
+      "Is it true that when Zoe Singh was in Art exhibit at the Brooklyn Museum at United Nations Headquarters is 2019-12-22?",
+      "Is it true that when Ethan Rivera was in Poetry reading in the East Village at Queens Botanical Garden is 2018-04-03?",
+      "Is it true that what Caleb Santos did at Brooklyn Bridge on 2018-04-03 is Historical walking tour of Lower Manhattan?",
+      "Is it true that when Megan Chen was in Fireworks display on Fourth of July at United Nations Headquarters is 2013-03-26?",
+      "Is it true that who was in Fireworks display on Fourth of July at Times Square on 2013-03-26 is Dylan Kim?",
+      "Is it true that who was in Street performance in Washington Square Park at Hudson River Park on 2011-11-02 is Megan Chen?",
+      "Is it true that who was in Ice skating at Rockefeller Center at Queens Botanical Garden on 2015-06-07 is Dylan Kim?",
+      "Is it true that where Zoe Singh was in Fireworks display on Fourth of July on 2013-03-26 is Queens Botanical Garden?",
+      "Is it true that where Logan Garcia was in Yoga class in Prospect Park on 2012-07-14 is Queens Botanical Garden?",
+      "Is it true that when Maria Rodriguez was in Street performance in Washington Square Park at Metropolitan Museum of Art is 2017-08-09?"
+    ],
+    "answers": [
+      "True",
+      "True",
+      "True",
+      "False",
+      "False",
+      "False",
+      "True",
+      "False",
+      "False",
+      "True"
+    ],
+    "topics": [
+      "temporal",
+      "temporal",
+      "content",
+      "temporal",
+      "entity",
+      "entity",
+      "entity",
+      "location",
+      "location",
+      "temporal"
+    ]
+  }
+]

@@ -31,8 +31,12 @@ elements:
 # 2) Story generation
 # =========================
 stories:
-  num_chapters: 100
-  events_per_chapter: 10
+  n_chapters: 2        # テスト用
+  k_events: 10         # テスト用
+  
+  # 本番用（コメントアウト）
+  # n_chapters: 100
+  # k_events: 10
 
   openai:
     model: gpt-3.5-turbo

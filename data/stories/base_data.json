@@ -1,0 +1,136 @@
+[
+  {
+    "chapter": 0,
+    "events": [
+      {
+        "location": "One World Observatory",
+        "temporal": "2010-05-20",
+        "entity": "Zoe Singh",
+        "content": "Yoga class in Prospect Park"
+      },
+      {
+        "location": "Hudson River Park",
+        "temporal": "2012-07-14",
+        "entity": "Ethan Rivera",
+        "content": "Sculpture exhibition at Storm King Art Center"
+      },
+      {
+        "location": "Brooklyn Bridge",
+        "temporal": "2019-12-22",
+        "entity": "Evan Kumar",
+        "content": "Art exhibit at the Brooklyn Museum"
+      },
+      {
+        "location": "Central Park",
+        "temporal": "2011-11-02",
+        "entity": "Megan Chen",
+        "content": "Yoga class in Prospect Park"
+      },
+      {
+        "location": "The Cloisters",
+        "temporal": "2019-12-22",
+        "entity": "Rachel Bennett",
+        "content": "Sculpture exhibition at Storm King Art Center"
+      },
+      {
+        "location": "Broadway",
+        "temporal": "2018-04-03",
+        "entity": "Evan Kumar",
+        "content": "Yoga class in Prospect Park"
+      },
+      {
+        "location": "Queens Botanical Garden",
+        "temporal": "2019-12-22",
+        "entity": "Zoe Singh",
+        "content": "Outdoor concert in Central Park"
+      },
+      {
+        "location": "Metropolitan Museum of Art",
+        "temporal": "2016-01-28",
+        "entity": "Natalie Gonzalez",
+        "content": "Street performance in Washington Square Park"
+      },
+      {
+        "location": "High Line Park",
+        "temporal": "2013-03-26",
+        "entity": "Natalie Gonzalez",
+        "content": "Street fair in Chinatown"
+      },
+      {
+        "location": "Brooklyn Bridge",
+        "temporal": "2016-01-28",
+        "entity": "Ethan Rivera",
+        "content": "Ice skating at Rockefeller Center"
+      }
+    ],
+    "high_narrativity_text": "(1)\nUpon the date of 2010-05-20, in the regal realm of One World Observatory, fair Zoe Singh partook in a yoga class in Prospect Park. The sun's golden fingers did gently caress the earth as she stretched her limbs towards yon sky, breathing in the sweet, verdant air of May.\n\n(2)\nIn the year of grace 2012, on 2012-07-14, at the Hudson River Park, noble Ethan Rivera beheld a sculpture exhibition at Storm King Art Center. Marble and metal entwined in artistic embrace, whispering tales of ancient gods and mortal strife, while the river's melody carried secrets untold.\n\n(3)\nTwas 2019, on the eve of 2019-12-22, near the Brooklyn Bridge, gallant Evan Kumar wandered to an art exhibit at the Brooklyn Museum. Brushstrokes danced upon canvas, telling stories of love lost and battles won, under the watchful gaze of moon and stars.\n\n(4)\nWithin the autumnal embrace of 2011, on 2011-11-02, nestled within Central Park, did fair Megan Chen partake in a yoga class in Prospect Park. The rustle of leaves and distant laughter whispered tales of fleeting moments and eternal truths.\n\n(5)\nAmidst the frost-kissed air of 2019, on 2019-12-22, at the ethereal Cloisters, fair Rachel Bennett marveled at a sculpture exhibition at Storm King Art Center. Stone and wood crafted into wonders untold, speaking of forgotten times and dreams yet to be dreamt.\n\n(6)\nIn the year of 2018, on the date of 2018-04-03, beneath the glowing lights of Broadway, noble Evan Kumar found respite in a yoga class in Prospect Park. Amidst the urban symphony, he sought solace in the dance of breath and movement.\n\n(7)\nTwas the eve of 2019-12-22, beneath the gaze of stars, within the Queens Botanical Garden, did Zoe Singh revel in an outdoor concert in Central Park. Melodies wove through the night, carrying tales of love and longing to the hearts of all who listened.\n\n(8)\nIn the wintertide of 2016, on 2016-01-28, within the hallowed halls of the Metropolitan Museum of Art, did noble Natalie Gonzalez chance upon a street performance in Washington Square Park. Music and laughter filled the air, painting the night with hues of joy and wonder.\n\n(9)\nWithin the bloom of spring in 2013, on 2013-03-26, along the High Line Park, fair Natalie Gonzalez delighted in a street fair in Chinatown. A riot of colors and scents embraced her, as vendors sold wares of silk and spice, weaving a tapestry of life's rich pageantry.\n\n(10)\nBeneath the winter's icy cloak of 2016, on 2016-01-28, upon the Brooklyn Bridge, noble Ethan Rivera glided upon frozen waters, ice skating at Rockefeller Center. Laughter echoed amidst the chill, mingling with the whispers of dreams yet unspoken.",
+    "low_narrativity_text": "- Zoe Singh was in Yoga class in Prospect Park at One World Observatory on 2010-05-20.\n- Ethan Rivera was in Sculpture exhibition at Storm King Art Center at Hudson River Park on 2012-07-14.\n- Evan Kumar was in Art exhibit at the Brooklyn Museum at Brooklyn Bridge on 2019-12-22.\n- Megan Chen was in Yoga class in Prospect Park at Central Park on 2011-11-02.\n- Rachel Bennett was in Sculpture exhibition at Storm King Art Center at The Cloisters on 2019-12-22.\n- Evan Kumar was in Yoga class in Prospect Park at Broadway on 2018-04-03.\n- Zoe Singh was in Outdoor concert in Central Park at Queens Botanical Garden on 2019-12-22.\n- Natalie Gonzalez was in Street performance in Washington Square Park at Metropolitan Museum of Art on 2016-01-28.\n- Natalie Gonzalez was in Street fair in Chinatown at High Line Park on 2013-03-26.\n- Ethan Rivera was in Ice skating at Rockefeller Center at Brooklyn Bridge on 2016-01-28."
+  },
+  {
+    "chapter": 1,
+    "events": [
+      {
+        "location": "United Nations Headquarters",
+        "temporal": "2019-12-22",
+        "entity": "Zoe Singh",
+        "content": "Art exhibit at the Brooklyn Museum"
+      },
+      {
+        "location": "Queens Botanical Garden",
+        "temporal": "2018-04-03",
+        "entity": "Ethan Rivera",
+        "content": "Poetry reading in the East Village"
+      },
+      {
+        "location": "Brooklyn Bridge",
+        "temporal": "2018-04-03",
+        "entity": "Caleb Santos",
+        "content": "Historical walking tour of Lower Manhattan"
+      },
+      {
+        "location": "United Nations Headquarters",
+        "temporal": "2019-12-22",
+        "entity": "Megan Chen",
+        "content": "Fireworks display on Fourth of July"
+      },
+      {
+        "location": "Times Square",
+        "temporal": "2013-03-26",
+        "entity": "Caleb Santos",
+        "content": "Fireworks display on Fourth of July"
+      },
+      {
+        "location": "Hudson River Park",
+        "temporal": "2011-11-02",
+        "entity": "Maria Rodriguez",
+        "content": "Street performance in Washington Square Park"
+      },
+      {
+        "location": "Queens Botanical Garden",
+        "temporal": "2015-06-07",
+        "entity": "Dylan Kim",
+        "content": "Ice skating at Rockefeller Center"
+      },
+      {
+        "location": "United Nations Headquarters",
+        "temporal": "2013-03-26",
+        "entity": "Zoe Singh",
+        "content": "Fireworks display on Fourth of July"
+      },
+      {
+        "location": "Socrates Sculpture Park",
+        "temporal": "2012-07-14",
+        "entity": "Logan Garcia",
+        "content": "Yoga class in Prospect Park"
+      },
+      {
+        "location": "Metropolitan Museum of Art",
+        "temporal": "2017-08-09",
+        "entity": "Maria Rodriguez",
+        "content": "Street performance in Washington Square Park"
+      }
+    ],
+    "high_narrativity_text": "(1) At the United Nations Headquarters on a chilling December eve betwixt the year 2019, fair Zoe Singh, clothed in threads spun from dreams, roamed the halls with an air of elegance, her eyes aglow with wonder akin to the mysteries of the cosmos. Though mere art adorned the walls, her spirit soared as if beholding the grandest exhibit at the Brooklyn Museum.\n\n(2) 'Twas under the canopy of stars, midst the blooms of Queens Botanical Garden, in the fair season of April in 2018, that Ethan Rivera, a poet of the soul, recited verses that twined and weaved tales of love and loss. His words, like honeyed nectar, lingered in the air, echoing beyond the petals, reminiscent of a poetry reading in the East Village.\n\n(3) 'Twas upon the ancient stones of Brooklyn Bridge, in the selfsame day as Ethan's poesy, 2018's April breath, that Caleb Santos, a custodian of history's tapestry, led wanderers through the annals of time. Each step upon cobble and steel whispered secrets of yore, akin to a historical walking tour of Lower Manhattan.\n\n(4) Under the sable velvet of night, with the year waning in the arms of December within the United Nations Headquarters, Megan Chen beheld the empyrean burst forth in resplendent hues, a sight to rival the grandest fireworks display on Fourth of July.\n\n(5) Amidst the bustling throngs of Times Square, in the distant era of March, year 2013, Caleb Santos watched the heavens alight with fervor, a display of pyrotechnic prowess akin to that of Fourth of July's brilliance.\n\n(6) Beside the whispering waters of Hudson River Park, as autumn's cloak enveloped the land in 2011, Maria Rodriguez enthralled passersby with a symphony of movement, her dance calling forth echoes of a street performance in Washington Square Park.\n\n(7) 'Neath the watchful gaze of stars, on the cusp of summer in 2015, Dylan Kim glided upon the frozen stage of Queens Botanical Garden, his movements a ballet of ice upon the rink, reminiscent of an afternoon ice skating at Rockefeller Center.\n\n(8) In the azure embrace of 2013's March, within the venerable walls of the United Nations Headquarters, Zoe Singh beheld the firmament ablaze, a celestial ballet of lights enchanting the eyes, akin to the grand fireworks display on Fourth of July.\n\n(9) In the verdant embrace of 2012's July, midst the sculptures in Socrates Sculpture Park, Logan Garcia found solace in the union of body and spirit, echoing the serenity of a yoga class in Prospect Park.\n\n(10) Beneath the vaulted ceilings of the Metropolitan Museum of Art, in the sultry month of August, 2017, Maria Rodriguez once more graced the world with her artistry, her performance weaving tales of joy and sorrow, a living tribute to the street performances in Washington Square Park.",
+    "low_narrativity_text": "- Zoe Singh was in Art exhibit at the Brooklyn Museum at United Nations Headquarters on 2019-12-22.\n- Ethan Rivera was in Poetry reading in the East Village at Queens Botanical Garden on 2018-04-03.\n- Caleb Santos was in Historical walking tour of Lower Manhattan at Brooklyn Bridge on 2018-04-03.\n- Megan Chen was in Fireworks display on Fourth of July at United Nations Headquarters on 2019-12-22.\n- Caleb Santos was in Fireworks display on Fourth of July at Times Square on 2013-03-26.\n- Maria Rodriguez was in Street performance in Washington Square Park at Hudson River Park on 2011-11-02.\n- Dylan Kim was in Ice skating at Rockefeller Center at Queens Botanical Garden on 2015-06-07.\n- Zoe Singh was in Fireworks display on Fourth of July at United Nations Headquarters on 2013-03-26.\n- Logan Garcia was in Yoga class in Prospect Park at Socrates Sculpture Park on 2012-07-14.\n- Maria Rodriguez was in Street performance in Washington Square Park at Metropolitan Museum of Art on 2017-08-09."
+  }
+]

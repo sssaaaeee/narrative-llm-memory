@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 from typing import Dict, List
 
+from dotenv import load_dotenv
 from tqdm import tqdm
 
 from src.dataio import read_json, write_json
@@ -46,6 +47,9 @@ def index_by_chapter(items: List[dict]) -> Dict[int, dict]:
 
 
 def main() -> None:
+    # Load environment variables (including HF_TOKEN)
+    load_dotenv()
+    
     args = parse_args()
     model_tag = args.model_tag or _tag_from_model_id(args.model)
 

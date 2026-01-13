@@ -23,6 +23,7 @@ def main() -> None:
     args = parse_args()
 
     elements = read_json(ELEMENTS_PATH)
+    elements = elements["elements"]  # adjust for the structure
     base_data = read_json(BASE_DATA_PATH)
 
     spec = DistractorSpec(ratio=args.ratio)

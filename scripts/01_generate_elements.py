@@ -34,20 +34,85 @@ class ElementSpec:
     key: str
     prompts: List[str]
 
+# テスト時: OFF
+# TEMPORAL_SPEC = ElementSpec(
+#     key="temporals",
+#     prompts=[
+#         (
+#             "Please list 200 different dates within the years 2010 to 2020 in New York.\n"
+#             "Each date should be specific and unique (format: YYYY-MM-DD).\n"
+#             "The dates should be distributed across different seasons, months, and years, and must not overlap.\n"
+#             "Examples: '2012-04-15', '2014-11-03', '2018-07-22', '2016-01-01', '2020-09-10'."
+#         ),
+#         "Keep only neutral and positive time points, removing major holidays and widely recognized negative events.",
+#         "Are those time points all distinct and spread across different dates within 2010 to 2020?",
+#         "Discard less distinct or odd ones, keeping only 120 different time points.",
+#         "Are those time points all located at different dates within 2010 to 2020?",
+#     ],
+# )
 
+# ENTITY_SPEC = ElementSpec(
+#     key="entities",
+#     prompts=[
+#         (
+#             "Please list 200 different combinations of first names and last names commonly used in the United States.\n"
+#             "Each combination should be unique, realistic, and natural-sounding.\n"
+#             "The names should reflect a diversity of backgrounds.\n"
+#             "Examples: 'Emily Carter', 'Michael Johnson', 'Sophia Lee', 'James Anderson', 'Ava Martinez'."
+#         ),
+#         "Keep only neutral and positive-sounding names, removing company names, celebrity names, and historically significant figures.",
+#         "Are those name combinations all unique and diverse?",
+#         "Discard less distinct or odd ones, keeping only 120 different names.",
+#         "Are those names all unique and natural-sounding in the United States?",
+#     ],
+# )
+
+# LOCATION_SPEC = ElementSpec(
+#     key="locations",
+#     prompts=[
+#         (
+#             "Please list 200 different locations in New York and surrounding areas.\n"
+#             "Each location should be a distinct place and must not overlap.\n"
+#             "Output only the location names without coordinates.\n"
+#             "Examples: 'Empire State Building', 'Statue of Liberty', 'Museum of Modern Art', "
+#             "'Chrysler Building', 'Fort Greene Park'."
+#         ),
+#         "Keep only neutral and positive locations, removing any location whose name specifies a company name.",
+#         "Are those locations all distinct places in New York?",
+#         "Discard less distinct or odd ones, keeping only 120 different locations.",
+#         "Are those locations all distinct places in New York?",
+#     ],
+# )
+
+# CONTENT_SPEC = ElementSpec(
+#     key="contents",
+#     prompts=[
+#         (
+#             "Please list 200 different types of events or happenings that could take place in New York and surrounding areas.\n"
+#             'Each event should be concrete and specific, described as a short phrase or sentence (e.g., "a food festival", '
+#             '"a marriage proposal", "children playing chess in the park").\n'
+#             "The events should be diverse and should not overlap in content."
+#         ),
+#         "Keep only neutral or positive events, removing any event that includes a company name or refers to commercial brands.",
+#         "Are all of these events clearly distinct and feasible in New York or the surrounding area?",
+#         "Discard less distinct, less feasible, or odd events, keeping only 120 clearly distinct, realistic, concrete events.",
+#         "Are these 120 events all clearly distinct and realistically could take place at different locations and times in New York?",
+#     ],
+# )
+# ここまで
+
+# テスト時: ON
 TEMPORAL_SPEC = ElementSpec(
     key="temporals",
     prompts=[
         (
-            "Please list 200 different dates within the years 2010 to 2020 in New York.\n"
+            "Please list 20 different dates within the years 2010 to 2020 in New York.\n"
             "Each date should be specific and unique (format: YYYY-MM-DD).\n"
             "The dates should be distributed across different seasons, months, and years, and must not overlap.\n"
             "Examples: '2012-04-15', '2014-11-03', '2018-07-22', '2016-01-01', '2020-09-10'."
         ),
         "Keep only neutral and positive time points, removing major holidays and widely recognized negative events.",
         "Are those time points all distinct and spread across different dates within 2010 to 2020?",
-        "Discard less distinct or odd ones, keeping only 120 different time points.",
-        "Are those time points all located at different dates within 2010 to 2020?",
     ],
 )
 
@@ -55,15 +120,13 @@ ENTITY_SPEC = ElementSpec(
     key="entities",
     prompts=[
         (
-            "Please list 200 different combinations of first names and last names commonly used in the United States.\n"
+            "Please list 20 different combinations of first names and last names commonly used in the United States.\n"
             "Each combination should be unique, realistic, and natural-sounding.\n"
             "The names should reflect a diversity of backgrounds.\n"
             "Examples: 'Emily Carter', 'Michael Johnson', 'Sophia Lee', 'James Anderson', 'Ava Martinez'."
         ),
         "Keep only neutral and positive-sounding names, removing company names, celebrity names, and historically significant figures.",
         "Are those name combinations all unique and diverse?",
-        "Discard less distinct or odd ones, keeping only 120 different names.",
-        "Are those names all unique and natural-sounding in the United States?",
     ],
 )
 
@@ -71,15 +134,14 @@ LOCATION_SPEC = ElementSpec(
     key="locations",
     prompts=[
         (
-            "Please list 200 different locations in New York and surrounding areas.\n"
-            "Each location should correspond to a specific (longitude, latitude) point and must not overlap.\n"
-            "Examples: 'Empire State Building', 'Statue of Liberty', 'Museum of Modern Art (MoMA)', "
+            "Please list 20 different locations in New York and surrounding areas.\n"
+            "Each location should be a distinct place and must not overlap.\n"
+            "Output only the location names without coordinates.\n"
+            "Examples: 'Empire State Building', 'Statue of Liberty', 'Museum of Modern Art', "
             "'Chrysler Building', 'Fort Greene Park'."
         ),
         "Keep only neutral and positive locations, removing any location whose name specifies a company name.",
-        "Are those locations all at different (longitude, latitude) points in New York?",
-        "Discard less distinct or odd ones, keeping only 120 different locations.",
-        "Are those locations all at different (longitude, latitude) points in New York?",
+        "Are those locations all distinct places in New York?",
     ],
 )
 
@@ -87,17 +149,16 @@ CONTENT_SPEC = ElementSpec(
     key="contents",
     prompts=[
         (
-            "Please list 200 different types of events or happenings that could take place in New York and surrounding areas.\n"
+            "Please list 20 different types of events or happenings that could take place in New York and surrounding areas.\n"
             'Each event should be concrete and specific, described as a short phrase or sentence (e.g., "a food festival", '
             '"a marriage proposal", "children playing chess in the park").\n'
             "The events should be diverse and should not overlap in content."
         ),
         "Keep only neutral or positive events, removing any event that includes a company name or refers to commercial brands.",
         "Are all of these events clearly distinct and feasible in New York or the surrounding area?",
-        "Discard less distinct, less feasible, or odd events, keeping only 120 clearly distinct, realistic, concrete events.",
-        "Are these 120 events all clearly distinct and realistically could take place at different locations and times in New York?",
     ],
 )
+# ここまで
 
 SPECS = [LOCATION_SPEC, TEMPORAL_SPEC, ENTITY_SPEC, CONTENT_SPEC]
 
@@ -156,8 +217,8 @@ def call_openai_list(
     items = dedup_keep_order(items)
 
     if len(items) < max_items:
-        # Not fatal, but makes failures visible.
-        raise ValueError(f"Got only {len(items)} items (< {max_items}). Output:\n{text}")
+        print(f"[WARNING] Got only {len(items)} items (< {max_items}). Continuing anyway.")
+        return items  # Return what we got instead of raising
 
     return items[:max_items]
 
@@ -172,7 +233,25 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seed", type=int, default=42)  # kept for reproducibility logs
     return p.parse_args()
 
+# テスト時: OFF
+# def main() -> None:
+#     args = parse_args()
 
+#     load_dotenv()
+#     api_key = os.getenv("OPENAI_API_KEY")
+#     if not api_key:
+#         raise RuntimeError("OPENAI_API_KEY is not set. Put it in env or .env.")
+
+#     client = OpenAI(api_key=api_key)
+
+#     results = {}
+#     for spec in SPECS:
+#         print(f"[INFO] Generating {spec.key} ...")
+#         results[spec.key] = call_openai_list(client, args.model, spec.prompts, max_items=100)
+#         print(f"[INFO]  -> {len(results[spec.key])} items")
+# ここまで
+
+# テスト時: ON
 def main() -> None:
     args = parse_args()
 
@@ -186,8 +265,9 @@ def main() -> None:
     results = {}
     for spec in SPECS:
         print(f"[INFO] Generating {spec.key} ...")
-        results[spec.key] = call_openai_list(client, args.model, spec.prompts, max_items=100)
+        results[spec.key] = call_openai_list(client, args.model, spec.prompts, max_items=20)
         print(f"[INFO]  -> {len(results[spec.key])} items")
+# ここまで
 
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)

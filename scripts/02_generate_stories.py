@@ -14,8 +14,8 @@ from src.dataset import (
     sample_events,
     events_to_dicts,
     build_high_narrativity_prompts,
-    build_low_narrativity_prompts,
     verify_verbatim_inclusion,
+    Event,
 )
 
 
@@ -28,6 +28,18 @@ def chat_generate(client: OpenAI, model: str, system: str, user: str) -> str:
         ],
     )
     return resp.choices[0].message.content or ""
+
+
+def generate_low_narrativity_from_template(events: List[Event]) -> str:
+    """
+    Generate low-narrativity text using a simple template.
+    Format: [Entity] was in [Content] at [Location] on [Temporal].
+    """
+    lines = []
+    for event in events:
+        line = f"- {event.entity} was in {event.content} at {event.location} on {event.temporal}."
+        lines.append(line)
+    return "\n".join(lines)
 
 
 def generate_with_retries(
@@ -72,18 +84,31 @@ def generate_with_retries(
 
     return {"text": text, "ok": ok, "missing": missing, "tries": tries}
 
+# テスト時: OFF
+# def parse_args() -> argparse.Namespace:
+#     p = argparse.ArgumentParser()
+#     p.add_argument("--elements", type=str, default="data/elements/common_elements.json")
+#     p.add_argument("--out", type=str, default="data/stories/base_data.json")
+#     p.add_argument("--n_chapters", type=int, default=100)
+#     p.add_argument("--k_events", type=int, default=10)
+#     p.add_argument("--seed", type=int, default=0)
+#     p.add_argument("--model", type=str, default="gpt-3.5-turbo")
+#     p.add_argument("--max_retries", type=int, default=2)
+#     return p.parse_args()
+# ここまで
 
+# テスト時: ON
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
     p.add_argument("--elements", type=str, default="data/elements/common_elements.json")
     p.add_argument("--out", type=str, default="data/stories/base_data.json")
-    p.add_argument("--n_chapters", type=int, default=100)
+    p.add_argument("--n_chapters", type=int, default=2)
     p.add_argument("--k_events", type=int, default=10)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--model", type=str, default="gpt-3.5-turbo")
     p.add_argument("--max_retries", type=int, default=2)
     return p.parse_args()
-
+# ここまで
 
 def main() -> None:
     load_dotenv()
@@ -96,6 +121,7 @@ def main() -> None:
 
     client = OpenAI(api_key=api_key)
     elements = read_json(args.elements)
+    elements = elements["elements"]  # adjust for the structure
 
     all_data: List[Dict[str, Any]] = []
 
@@ -114,24 +140,15 @@ def main() -> None:
             label=f"high(chapter={chapter})",
         )
 
-        # Low narrativity
-        ln_system, ln_user = build_low_narrativity_prompts(events, k_events=args.k_events)
-        ln = generate_with_retries(
-            client=client,
-            model=args.model,
-            system=ln_system,
-            user=ln_user,
-            events=events,
-            max_retries=args.max_retries,
-            label=f"low(chapter={chapter})",
-        )
+        # Low narrativity (template-based)
+        ln_text = generate_low_narrativity_from_template(events)
 
         all_data.append(
             {
                 "chapter": chapter,
                 "events": events_to_dicts(events),
                 "high_narrativity_text": hn["text"],
-                "low_narrativity_text": ln["text"]
+                "low_narrativity_text": ln_text
             }
         )
 

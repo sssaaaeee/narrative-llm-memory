@@ -48,16 +48,35 @@ def load_model(model_id: str, *, offload_dir: str = "offload") -> LoadedModel:
       - meta-llama/Llama-2-13b-chat-hf
       - Qwen/Qwen2.5-14B-Instruct  (or your exact repo id)
     """
-    tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=True)
+    # Load HF token from environment
+    hf_token = os.getenv("HF_TOKEN")
+    
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_id, 
+        use_fast=True,
+        token=hf_token
+    )
 
-    max_memory = _get_max_memory()
-    model = AutoModelForCausalLM.from_pretrained(
-        model_id,
-        torch_dtype=torch.float16,
-        device_map="auto",
-        max_memory=max_memory,
-        offload_folder=offload_dir,
-    ).eval()
+    # Check if CUDA is available, otherwise use CPU (for Mac)
+    if torch.cuda.is_available():
+        max_memory = _get_max_memory()
+        model = AutoModelForCausalLM.from_pretrained(
+            model_id,
+            torch_dtype=torch.float16,
+            device_map="auto",
+            max_memory=max_memory,
+            offload_folder=offload_dir,
+            token=hf_token,
+        ).eval()
+    else:
+        # Mac/CPU: load without device_map
+        print("[INFO] CUDA not available, loading model on CPU (this will be slow)")
+        model = AutoModelForCausalLM.from_pretrained(
+            model_id,
+            torch_dtype=torch.float32,  # Use float32 for CPU
+            low_cpu_mem_usage=True,
+            token=hf_token,
+        ).eval()
 
     return LoadedModel(model_id=model_id, tokenizer=tokenizer, model=model)
 

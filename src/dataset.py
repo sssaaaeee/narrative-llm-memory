@@ -1,6 +1,3 @@
-# elements→story→distractor→qa の整形
-
-# src/dataset.py
 from __future__ import annotations
 
 from dataclasses import dataclass, asdict
@@ -16,9 +13,7 @@ class Event:
     location: str
     temporal: str  # "YYYY-MM-DD"
     entity: str
-    first_name: str
     content: str
-    content_single_detail: str  # e.g., "did something."
 
 
 def sample_events(
@@ -60,11 +55,6 @@ def events_to_dicts(events: Sequence[Event]) -> List[dict]:
 def verify_verbatim_inclusion(events: Sequence[Event], text: str) -> Tuple[bool, List[str]]:
     """
     Verify that each event's key strings appear in the generated text.
-    Minimal & robust given your prompt constraints:
-      - location appears (verbatim)
-      - temporal "YYYY-MM-DD" appears (verbatim)
-      - entity appears (verbatim)
-      - "FirstName {content}." appears (verbatim)
     """
     missing: List[str] = []
     for i, e in enumerate(events, start=1):
@@ -74,9 +64,8 @@ def verify_verbatim_inclusion(events: Sequence[Event], text: str) -> Tuple[bool,
             missing.append(f"[event {i}] missing temporal: {e.temporal}")
         if e.entity not in text:
             missing.append(f"[event {i}] missing entity: {e.entity}")
-        detail = f"{e.first_name} {e.content_single_detail}"
-        if detail not in text:
-            missing.append(f"[event {i}] missing detail: {detail}")
+        if e.content not in text:
+            missing.append(f"[event {i}] missing content: {e.content}")
 
     return (len(missing) == 0), missing
 
@@ -94,7 +83,7 @@ def build_event_instructions(events: Sequence[Event]) -> str:
                     f"  - Full location '{e.location}'",
                     f"  - Full date '{e.temporal}'",
                     f"  - Full name '{e.entity}'",
-                    f"  - Full detail that '{e.first_name} {e.content_single_detail}'",
+                    f"  - Full content '{e.content}'",
                 ]
             )
         )
@@ -111,24 +100,50 @@ def build_high_narrativity_prompts(
         "characteristic of Shakespeare's plays, including the use of archaic expressions "
         "and heightened emotion"
     ),
+    include_style_description: bool = True,
+    include_event_instructions: bool = True,
 ) -> Tuple[str, str]:
+    """
+    Build prompts for high-narrativity generation.
+
+    - If include_style_description is False, the verbose style_description is omitted from the user prompt.
+    - If include_event_instructions is False, event-specific verbatim strings are not embedded in the prompt;
+      only generic/high-level constraints remain (so you can supply the event details separately).
+    """
     system = (
         "You are a creative fiction writer specializing in detailed, atmospheric novel excerpts. "
         "Your task is to generate vivid, immersive scenes based on specific prompts."
     )
-    instructions = build_event_instructions(events)
+
+    # Optionally include the detailed per-event instructions (which contain verbatim strings).
+    if include_event_instructions:
+        instructions = build_event_instructions(events)
+        instructions_block = (
+            f"=== HARD CONTENT CONSTRAINTS (PER PARAGRAPH i=1..{k_paragraphs}) ===\n"
+            f"{instructions}\n"
+            "- You MUST include ALL four verbatim elements (location, date, entity, detail) for each event in the corresponding paragraph, EXACTLY AS GIVEN (no paraphrase, no pronouns, no coreference).\n"
+            "- The four verbatim strings for paragraph (i) must appear EXACTLY ONCE in that paragraph and in no other paragraph.\n"
+            "- For the temporal/date, write the date exactly as provided (e.g., \"2017-12-19\"). Do not spell it out.\n"
+            "- Do not introduce any other locations, dates, or times; do not paraphrase the four verbatim strings.\n"
+            "- No background lore beyond what the event requires.\n"
+        )
+    else:
+        instructions_block = (
+            f"=== HARD CONTENT CONSTRAINTS (PER PARAGRAPH i=1..{k_paragraphs}) ===\n"
+            "- Event-specific verbatim strings are omitted from this prompt. The event details will be provided separately and must be used as-is.\n"
+            "- Do not introduce any locations, dates, or entities that were not provided externally.\n"
+            "- For the temporal/date, write the date exactly as provided (e.g., \"2017-12-19\"). Do not spell it out.\n"
+            "- The required event elements should each appear exactly once in the corresponding paragraph.\n"
+            "- No background lore beyond what the event requires.\n"
+        )
+
+    style_info = f" ({style_description})" if include_style_description else ""
 
     user = f"""
-    Write a complete chapter in a {style} style ({style_description}), consisting of exactly {k_paragraphs} numbered paragraphs (1)–({k_paragraphs}).
+    Write a complete chapter in a {style} style{style_info}, consisting of exactly {k_paragraphs} numbered paragraphs (1)–({k_paragraphs}).
     Each paragraph centers on one distinct event. The story must be strictly chronological: (1) is the earliest, ({k_paragraphs}) the latest.
 
-    === HARD CONTENT CONSTRAINTS (PER PARAGRAPH i=1..{k_paragraphs}) ===
-    {instructions}
-    - You MUST include ALL four verbatim elements (location, date, entity, detail) for each event in the corresponding paragraph, EXACTLY AS GIVEN (no paraphrase, no pronouns, no coreference).
-    - The four verbatim strings for paragraph (i) must appear EXACTLY ONCE in that paragraph and in no other paragraph.
-    - For the temporal/date, write the date exactly as provided (e.g., "2017-12-19"). Do not spell it out.
-    - Do not introduce any other locations, dates, or times; do not paraphrase the four verbatim strings.
-    - No background lore beyond what the event requires.
+    {instructions_block}
 
     === STYLE CONSTRAINTS ===
     - Immersive, sensory descriptions and emotions are allowed.
@@ -137,33 +152,3 @@ def build_high_narrativity_prompts(
 
     return system, user
 
-
-def build_low_narrativity_prompts(
-    events: Sequence[Event],
-    *,
-    k_events: int,
-) -> Tuple[str, str]:
-    system = (
-        "You are a logical thinker who lacks sensitivity and expresses yourself logically. "
-        "Your task is to state the facts calmly based on specific instructions."
-    )
-    instructions = build_event_instructions(events)
-
-    user = f"""
-    Produce a low-narrativity version of the same {k_events} events. One bullet per event, strictly one sentence per bullet.
-
-    === CONTENT CONSTRAINTS (PER BULLET i=1..{k_events}) ===
-    {instructions}
-    - You MUST include ALL four verbatim elements (location, date, entity, detail) for each event in the corresponding bullet, EXACTLY AS GIVEN (no paraphrase, no pronouns, no coreference).
-    - Do NOT omit or alter any element; every bullet must contain all four.
-    - Do NOT add any other locations/dates/times/entities or extra facts.
-
-    === STYLE CONSTRAINTS ===
-    - Low narrativity: no causal or temporal connectives (e.g., "therefore", "then", "so", "after that"; also Japanese equivalents like だから/そして/しかし/それで/その後/まず/次に/最後に are prohibited).
-    - One sentence per bullet; one bullet per event; no cross-references; no background info.
-    - Format: lines starting with "- " for each of the {k_events} bullets.
-
-    Output ONLY the bullet list (no meta text).
-    """.strip()
-
-    return system, user
