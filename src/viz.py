@@ -191,17 +191,6 @@ def plot_element_attention_2x2(
     save_format: str = "pdf",
     show_values: bool = False,
 ) -> None:
-    """
-    4つの干渉条件を 2×2 の1枚図にまとめて、
-    temporal/location/entity/content の attention 平均を High vs Low で比較。
-
-    Args:
-        results: results_attention.jsonから読み込んだ結果データ
-        output_dir: 出力ディレクトリ
-        model_name: 図タイトル等に使うモデル名
-        save_format: "png" or "pdf"
-        show_values: バー上に数値を出すか
-    """
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -216,7 +205,7 @@ def plot_element_attention_2x2(
     categories = ['temporal', 'location', 'entity', 'content']
     category_labels = ['Temporal', 'Location', 'Entity', 'Content']
 
-    # 2×2 サブプロット
+    # 2×2 
     fig, axes = plt.subplots(2, 2, figsize=(10.5, 6.2), sharey=True)
     axes = axes.flatten()
 
@@ -225,7 +214,6 @@ def plot_element_attention_2x2(
     width = 0.36
     x = np.arange(len(categories))
 
-    # y上限を決定
     all_vals = []
     results_data = results.get('results', {})
     for c in conditions:
@@ -251,8 +239,7 @@ def plot_element_attention_2x2(
 
         hn_values = [hn_data[cat] for cat in categories]
         ln_values = [ln_data[cat] for cat in categories]
-        
-        # 標準誤差
+
         hn_se = [hn_std.get(cat, 0) / np.sqrt(n_chapters) for cat in categories]
         ln_se = [ln_std.get(cat, 0) / np.sqrt(n_chapters) for cat in categories]
 
@@ -303,10 +290,7 @@ def plot_element_attention_1x4(
     save_format: str = "pdf",
     show_values: bool = False,
 ) -> None:
-    """
-    縦方向に4つのサブプロットを並べたレイアウト (1x4)。
-    各行が1条件を表し，2x2図と同じ指標を示す。
-    """
+
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -320,7 +304,7 @@ def plot_element_attention_1x4(
     categories = ['temporal', 'location', 'entity', 'content']
     category_labels = ['Temporal', 'Location', 'Entity', 'Content']
 
-    # 1x4 の縦配置
+    # 1x4 
     fig, axes = plt.subplots(4, 1, figsize=(6.5, 12), sharey=True)
 
     hn_color = '#2E86AB'
@@ -328,7 +312,6 @@ def plot_element_attention_1x4(
     width = 0.36
     x = np.arange(len(categories))
 
-    # y上限を決定
     all_vals = []
     results_data = results.get('results', {})
     for c in conditions:

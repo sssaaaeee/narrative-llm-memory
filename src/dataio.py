@@ -1,4 +1,4 @@
-# json I/O, schema check（最低限）
+# JSON I/O and minimal schema validation
 
 from __future__ import annotations
 

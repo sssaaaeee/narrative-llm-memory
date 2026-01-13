@@ -30,13 +30,9 @@ elements:
 # =========================
 # 2) Story generation
 # =========================
-stories:
-  n_chapters: 2        # テスト用
-  k_events: 10         # テスト用
-  
-  # 本番用（コメントアウト）
-  # n_chapters: 100
-  # k_events: 10
+stories:  
+  n_chapters: 100
+  k_events: 10
 
   openai:
     model: gpt-3.5-turbo
@@ -89,7 +85,7 @@ qa:
     - content
 
   balance:
-    true_ratio: 0.5  # True / False の比率
+    true_ratio: 0.5  
 
   constraints:
     forbid_coreference: true

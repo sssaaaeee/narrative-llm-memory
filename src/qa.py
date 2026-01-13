@@ -102,7 +102,7 @@ def generate_qa_for_chapter(
                 key=topic,
                 true_event=ev,
             )
-            # もし同値が返ってきてしまう（重複が多い）と True になり得るので、厳密に判定
+            # Strict comparison: if duplicate values exist, it could incorrectly become "True"
             ans = "False" if value != ev[topic] else "True"
 
         q = build_question(ev, topic, value)

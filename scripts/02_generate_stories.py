@@ -84,31 +84,16 @@ def generate_with_retries(
 
     return {"text": text, "ok": ok, "missing": missing, "tries": tries}
 
-# テスト時: OFF
-# def parse_args() -> argparse.Namespace:
-#     p = argparse.ArgumentParser()
-#     p.add_argument("--elements", type=str, default="data/elements/common_elements.json")
-#     p.add_argument("--out", type=str, default="data/stories/base_data.json")
-#     p.add_argument("--n_chapters", type=int, default=100)
-#     p.add_argument("--k_events", type=int, default=10)
-#     p.add_argument("--seed", type=int, default=0)
-#     p.add_argument("--model", type=str, default="gpt-3.5-turbo")
-#     p.add_argument("--max_retries", type=int, default=2)
-#     return p.parse_args()
-# ここまで
-
-# テスト時: ON
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
     p.add_argument("--elements", type=str, default="data/elements/common_elements.json")
     p.add_argument("--out", type=str, default="data/stories/base_data.json")
-    p.add_argument("--n_chapters", type=int, default=2)
+    p.add_argument("--n_chapters", type=int, default=100)
     p.add_argument("--k_events", type=int, default=10)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--model", type=str, default="gpt-3.5-turbo")
     p.add_argument("--max_retries", type=int, default=2)
     return p.parse_args()
-# ここまで
 
 def main() -> None:
     load_dotenv()

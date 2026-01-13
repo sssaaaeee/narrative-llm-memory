@@ -1,4 +1,3 @@
-# scripts/13_attention_analysis.py
 from __future__ import annotations
 
 import argparse

@@ -4,22 +4,28 @@ This directory contains all JSON files used in the experiments.
 All datasets are **synthetically generated** and derived from controlled event elements.
 No real-world personal data is included.
 
+**Example datasets** are provided by default as `*_ex.json` files. These are reduced-scale versions for quick testing and demonstrations. Full datasets can be generated using the scripts in `scripts/`.
+
 ---
 
 ## Directory Structure
 
 data/
 ├─ elements/
-│ └─ common_elements.json
+│ ├─ common_elements_ex.json (example)
+│ └─ common_elements.json (generated)
 │
 ├─ stories/
-│ └─ base_data.json
+│ ├─ base_data_ex.json (example)
+│ └─ base_data.json (generated)
 │
 ├─ distractors/
-│ └─ distractor.json
+│ ├─ distractor_ex.json (example)
+│ └─ distractor.json (generated)
 │
 └─ qa/
-  └─ qa.json
+  ├─ qa_ex.json (example)
+  └─ qa.json (generated)
 
 
 ---
